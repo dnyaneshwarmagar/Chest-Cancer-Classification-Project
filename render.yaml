@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: chest-ct-classifier
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: PREDICT_ROUTE
+        value: two
+      - key: KERAS_BACKEND
+        value: tensorflow
+      - key: PYTHONUNBUFFERED
+        value: "1"

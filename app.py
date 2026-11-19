@@ -37,6 +37,10 @@ class ClientApp:
         self.classifier2 = PredictionPipeline2(self.filename)
 
 
+# Module-level init so gunicorn `app:app` can serve prediction routes.
+clApp = ClientApp()
+
+
 @app.route("/", methods=["GET"])
 @cross_origin()
 def home():
@@ -51,8 +55,12 @@ def home():
 @app.route("/train", methods=["GET", "POST"])
 @cross_origin()
 def trainRoute():
-    os.system("python main.py")
-    return "Training done successfully!"
+    # Training is not intended inside the Render inference container.
+    return jsonify(
+        {
+            "message": "Training is disabled in the deployed inference service. Run training locally or via DVC."
+        }
+    ), 400
 
 
 @app.route("/predict", methods=["POST"])
@@ -73,6 +81,12 @@ def predictRoute2():
     return jsonify(result)
 
 
+@app.route("/health", methods=["GET"])
+@cross_origin()
+def health():
+    return jsonify({"status": "ok", "predict_route": get_predict_route()})
+
+
 if __name__ == "__main__":
-    clApp = ClientApp()
-    app.run(host="0.0.0.0", port=8080)
+    port = int(os.getenv("PORT", "8080"))
+    app.run(host="0.0.0.0", port=port)

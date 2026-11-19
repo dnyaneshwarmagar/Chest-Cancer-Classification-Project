@@ -163,7 +163,7 @@ cython_debug/
 artifacts/*
 
 # Local Hugging Face model copy (~82MB)
-hf_model/
+
 
 # Local MLflow server data
 mlflow_db/

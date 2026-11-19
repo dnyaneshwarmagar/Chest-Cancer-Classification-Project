@@ -1,0 +1,14 @@
+# Inference-only deps for Docker / Render (keep leaner than full training stack)
+tensorflow==2.18.0
+numpy
+Flask
+Flask-Cors
+python-dotenv
+huggingface_hub
+Pillow
+gunicorn
+python-box==6.0.2
+pyYAML
+ensure==1.0.4
+joblib
+-e .
