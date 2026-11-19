@@ -1,10 +1,16 @@
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
 from cnnClassifier.constants import *
 from cnnClassifier.utils.common import read_yaml, create_directories
 from cnnClassifier.entity.config_entity import (DataIngestionConfig,
                                                 PrepareBaseModelConfig,
                                                 TrainingConfig,
                                                 EvaluationConfig)
+
+load_dotenv()
 
 
 class ConfigurationManager:
@@ -64,9 +70,12 @@ class ConfigurationManager:
             Path(training.root_dir)
         ])
 
+        create_directories([Path(training.deployment_model_path).parent])
+
         training_config = TrainingConfig(
             root_dir=Path(training.root_dir),
             trained_model_path=Path(training.trained_model_path),
+            deployment_model_path=Path(training.deployment_model_path),
             updated_base_model_path=Path(prepare_base_model.updated_base_model_path),
             training_data=Path(training_data),
             params_epochs=params.EPOCHS,
@@ -80,15 +89,19 @@ class ConfigurationManager:
 
 
 
-    # def get_evaluation_config(self) -> EvaluationConfig:
-    #     eval_config = EvaluationConfig(
-    #         path_of_model="artifacts/training/model.h5",
-    #         training_data="artifacts/data_ingestion/Chest-CT-Scan-data",
-    #         mlflow_uri="https://dagshub.com//chest-Disease-Classification-MLflow-DVC.mlflow",
-    #         all_params=self.params,
-    #         params_image_size=self.params.IMAGE_SIZE,
-    #         params_batch_size=self.params.BATCH_SIZE
-    #     )
-    #     return eval_config
+    def get_evaluation_config(self) -> EvaluationConfig:
+        mlflow_uri = os.getenv(
+            "MLFLOW_TRACKING_URI",
+            "https://dagshub.com/dnyaneshwarmagar/Chest-Cancer-Classification-Project.mlflow",
+        )
+        eval_config = EvaluationConfig(
+            path_of_model=Path(self.config.training.trained_model_path),
+            training_data=Path(os.path.join(self.config.data_ingestion.unzip_dir, "Chest-CT-Scan-data")),
+            all_params=dict(self.params),
+            mlflow_uri=mlflow_uri,
+            params_image_size=self.params.IMAGE_SIZE,
+            params_batch_size=self.params.BATCH_SIZE,
+        )
+        return eval_config
 
       

@@ -6,11 +6,13 @@ Home-page: https://github.com/dnyaneshwarmagar/Chest-Cancer-Classification-Proje
 Author: dnyaneshwarmagar
 Author-email: dnyaneshwarmagar276@gmail.com
 Project-URL: Bug Tracker, https://github.com/dnyaneshwarmagar/Chest-Cancer-Classification-Project/issues
+Requires-Python: >=3.12,<3.13
 Dynamic: author
 Dynamic: author-email
 Dynamic: description
 Dynamic: home-page
 Dynamic: project-url
+Dynamic: requires-python
 Dynamic: summary
 
 # Kidney-Disease-Classification-Deep-Learning-Project
